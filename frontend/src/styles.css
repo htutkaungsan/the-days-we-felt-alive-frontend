@@ -1039,3 +1039,44 @@ footer > span:first-child {
     animation: none;
   }
 }
+
+/* Physical disc identity for the rental confirmation dialog. */
+.rental-dialog-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.rental-dialog-heading > div {
+  min-width: 0;
+}
+.rental-dialog-heading .eyebrow {
+  margin-bottom: 6px;
+}
+.rental-dialog-heading h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.rental-disc-icon {
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
+  filter: drop-shadow(0 3px 3px #26332e20);
+}
+.rental-disc-icon text {
+  fill: var(--ink);
+  font:
+    700 9px Arial,
+    sans-serif;
+  letter-spacing: 1px;
+}
+@media (max-width: 400px) {
+  .rental-dialog-heading {
+    gap: 12px;
+  }
+  .rental-disc-icon {
+    width: 60px;
+    height: 60px;
+    flex-basis: 60px;
+  }
+}

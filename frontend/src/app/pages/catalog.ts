@@ -152,8 +152,34 @@ import { Media, message } from '../core/types';
     @if (selected(); as item) {
       <div class="shop-overlay">
         <section class="shop-dialog" role="dialog" aria-modal="true" aria-labelledby="rental-title">
-          <p class="eyebrow">TAKE A FAVORITE HOME</p>
-          <h2 id="rental-title">{{ item.title }}</h2>
+          <div class="rental-dialog-heading">
+            <svg class="rental-disc-icon" viewBox="0 0 80 80" aria-hidden="true" focusable="false">
+              <defs>
+                <linearGradient id="rental-disc-shine" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#e9e5d9" />
+                  <stop offset="30%" stop-color="#faf9f3" />
+                  <stop offset="50%" stop-color="#aebbb3" />
+                  <stop offset="70%" stop-color="#f7ead4" />
+                  <stop offset="100%" stop-color="#ced6cd" />
+                </linearGradient>
+              </defs>
+              <circle cx="40" cy="40" r="36" fill="url(#rental-disc-shine)" stroke="#a4b0a6" />
+              <circle cx="40" cy="40" r="32" fill="none" stroke="#fffaf0" stroke-opacity="0.7" />
+              <path
+                d="M17 17 31 31 M49 49 63 63"
+                stroke="#fffaf0"
+                stroke-width="7"
+                stroke-opacity="0.65"
+              />
+              <circle cx="40" cy="40" r="14" fill="#e3e5da" stroke="#8b9b90" />
+              <circle cx="40" cy="40" r="7" fill="#faf7ef" stroke="#8b9b90" />
+              <text x="40" y="65" text-anchor="middle">{{ item.format }}</text>
+            </svg>
+            <div>
+              <p class="eyebrow">CD / DVD RENTAL SHOP</p>
+              <h2 id="rental-title">{{ item.title }}</h2>
+            </div>
+          </div>
           <p>One {{ item.format }} copy · Return at the shop</p>
           <form [formGroup]="rentalForm" (ngSubmit)="rent()" novalidate>
             <label
