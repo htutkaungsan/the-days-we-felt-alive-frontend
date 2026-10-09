@@ -1,17 +1,242 @@
-import { Component,inject,signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../core/api';
-import { Media,message } from '../core/types';
-const empty=()=>({title:'',creator:'',category:'music',format:'CD',total_copies:1,daily_fee:15,daily_late_fee:5,archived:false});
-@Component({imports:[FormsModule,CurrencyPipe],template:`<div class="section-heading"><h2>Media collection</h2><button class="small" (click)="edit()">Add media</button></div>
-@if(error()){<p role="alert" class="alert error">{{error()}}</p>}@if(notice()){<p role="status" class="alert success">{{notice()}}</p>}
-@if(loading()){<p class="empty">Loading media…</p>}@else{<div class="table-wrap"><table><thead><tr><th>Title / creator</th><th>Category / format</th><th>Copies</th><th>Fees per day</th><th>Status</th><th>Actions</th></tr></thead><tbody>@for(m of items();track m.id){<tr><td><strong>{{m.title}}</strong><small>{{m.creator}}</small></td><td>{{m.category}} / {{m.format}}</td><td>{{m.available_copies}} / {{m.total_copies}} available</td><td>{{m.daily_fee|currency:'THB'}}<small>Late: {{m.daily_late_fee|currency:'THB'}}</small></td><td>{{m.archived?'Archived':'Listed'}}</td><td class="table-actions"><button class="text-button" (click)="edit(m)" [disabled]="busy()">Edit</button><button class="text-button danger" (click)="remove(m)" [disabled]="busy()">Delete</button></td></tr>}@empty{<tr><td colspan="6">No media yet.</td></tr>}</tbody></table></div>}
-@if(open()){<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="media-form-title"><h2 id="media-form-title">{{id?'Edit media':'Add media'}}</h2><form (ngSubmit)="save()" #f="ngForm"><label>Title<input name="title" [(ngModel)]="form.title" required maxlength="150"></label><label>Artist / director<input name="creator" [(ngModel)]="form.creator" required maxlength="150"></label><div class="form-row"><label>Category<select name="category" [(ngModel)]="form.category"><option value="music">Music</option><option value="movie">Movie</option></select></label><label>Format<select name="format" [(ngModel)]="form.format"><option>CD</option><option>DVD</option></select></label></div><label>Total copies<input type="number" name="copies" [(ngModel)]="form.total_copies" required min="1" max="999" step="1"></label><div class="form-row"><label>Daily fee (THB)<input type="number" name="daily" [(ngModel)]="form.daily_fee" required min="0" max="9999.99" step="0.01"></label><label>Daily late fee (THB)<input type="number" name="late" [(ngModel)]="form.daily_late_fee" required min="0" max="9999.99" step="0.01"></label></div>@if(id){<label class="checkbox"><input type="checkbox" name="archived" [(ngModel)]="form.archived"> Archive from public catalog</label>}
-@if(formError()){<p role="alert" class="alert error">{{formError()}}</p>}<div class="actions"><button type="button" class="secondary" (click)="open.set(false)" [disabled]="busy()">Cancel</button><button [disabled]="busy()||f.invalid">{{busy()?'Saving…':'Save media'}}</button></div></form></section></div>}`})
-export class MediaManagement{private api=inject(Api);items=signal<Media[]>([]);loading=signal(true);busy=signal(false);error=signal('');notice=signal('');formError=signal('');open=signal(false);id=0;form=empty();constructor(){void this.load();}async load(){try{this.items.set((await firstValueFrom(this.api.get<Media[]>('/media'))).data);}catch(e){this.error.set(message(e));}finally{this.loading.set(false);}}
-edit(m?:Media){this.id=m?.id||0;this.form=m?{title:m.title,creator:m.creator,category:m.category,format:m.format,total_copies:m.total_copies,daily_fee:m.daily_fee,daily_late_fee:m.daily_late_fee,archived:!!m.archived}:empty();this.formError.set('');this.open.set(true);}
-async save(){if(this.busy())return;this.busy.set(true);this.formError.set('');try{const {archived,...body}=this.form;await firstValueFrom(this.id?this.api.patch('/media/'+this.id,this.form):this.api.post('/media',body));this.open.set(false);this.notice.set('Media saved.');await this.load();}catch(e){this.formError.set(message(e));}finally{this.busy.set(false);}}
-async remove(m:Media){if(this.busy()||!confirm('Delete '+m.title+'? If it has rental history, it will be archived.'))return;this.busy.set(true);this.error.set('');try{this.notice.set((await firstValueFrom(this.api.delete('/media/'+m.id))).data.message);await this.load();}catch(e){this.error.set(message(e));}finally{this.busy.set(false);}}
+import { Media, message } from '../core/types';
+const empty = () => ({
+  title: '',
+  creator: '',
+  category: 'music',
+  format: 'CD',
+  total_copies: 1,
+  daily_fee: 15,
+  daily_late_fee: 5,
+  archived: false,
+});
+@Component({
+  imports: [FormsModule, CurrencyPipe],
+  template: `<div class="section-heading">
+      <h2>Media collection</h2>
+      <button class="small" (click)="edit()">Add media</button>
+    </div>
+    @if (error()) {
+      <p role="alert" class="alert error">{{ error() }}</p>
+    }
+    @if (notice()) {
+      <p role="status" class="alert success">{{ notice() }}</p>
+    }
+    @if (loading()) {
+      <p class="empty">Loading media…</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Title / creator</th>
+              <th>Category / format</th>
+              <th>Copies</th>
+              <th>Fees per day</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (m of items(); track m.id) {
+              <tr>
+                <td>
+                  <strong>{{ m.title }}</strong
+                  ><small>{{ m.creator }}</small>
+                </td>
+                <td>{{ m.category }} / {{ m.format }}</td>
+                <td>{{ m.available_copies }} / {{ m.total_copies }} available</td>
+                <td>
+                  {{ m.daily_fee | currency: 'THB'
+                  }}<small>Late: {{ m.daily_late_fee | currency: 'THB' }}</small>
+                </td>
+                <td>{{ m.archived ? 'Archived' : 'Listed' }}</td>
+                <td class="table-actions">
+                  <button class="text-button" (click)="edit(m)" [disabled]="busy()">Edit</button
+                  ><button class="text-button danger" (click)="pending.set(m)" [disabled]="busy()">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6">No media yet.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+    @if (open()) {
+      <div class="modal-backdrop">
+        <section class="modal" role="dialog" aria-modal="true" aria-labelledby="media-form-title">
+          <h2 id="media-form-title">{{ id ? 'Edit media' : 'Add media' }}</h2>
+          <form (ngSubmit)="save()" #f="ngForm">
+            <label
+              >Title<input name="title" [(ngModel)]="form.title" required maxlength="150" /></label
+            ><label
+              >Artist / director<input
+                name="creator"
+                [(ngModel)]="form.creator"
+                required
+                maxlength="150"
+            /></label>
+            <div class="form-row">
+              <label
+                >Category<select name="category" [(ngModel)]="form.category">
+                  <option value="music">Music</option>
+                  <option value="movie">Movie</option>
+                </select></label
+              ><label
+                >Format<select name="format" [(ngModel)]="form.format">
+                  <option>CD</option>
+                  <option>DVD</option>
+                </select></label
+              >
+            </div>
+            <label
+              >Total copies<input
+                type="number"
+                name="copies"
+                [(ngModel)]="form.total_copies"
+                required
+                min="1"
+                max="999"
+                step="1"
+            /></label>
+            <div class="form-row">
+              <label
+                >Daily fee (THB)<input
+                  type="number"
+                  name="daily"
+                  [(ngModel)]="form.daily_fee"
+                  required
+                  min="0"
+                  max="9999.99"
+                  step="0.01" /></label
+              ><label
+                >Daily late fee (THB)<input
+                  type="number"
+                  name="late"
+                  [(ngModel)]="form.daily_late_fee"
+                  required
+                  min="0"
+                  max="9999.99"
+                  step="0.01"
+              /></label>
+            </div>
+            @if (id) {
+              <label class="checkbox"
+                ><input type="checkbox" name="archived" [(ngModel)]="form.archived" /> Archive from
+                public catalog</label
+              >
+            }
+            @if (formError()) {
+              <p role="alert" class="alert error">{{ formError() }}</p>
+            }
+            <div class="actions">
+              <button type="button" class="secondary" (click)="open.set(false)" [disabled]="busy()">
+                Cancel</button
+              ><button [disabled]="busy() || f.invalid">
+                {{ busy() ? 'Saving…' : 'Save media' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    }
+    @if (pending(); as record) {
+      <div class="modal-backdrop">
+        <section class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title">
+          <h2 id="delete-title">Delete media?</h2>
+          <p>{{ record.title }}</p>
+          <p>
+            Records with rental history will be archived. Active rentals must be returned first.
+          </p>
+          <div class="actions">
+            <button type="button" class="secondary" (click)="pending.set(null)" [disabled]="busy()">
+              Cancel</button
+            ><button (click)="remove(record)" [disabled]="busy()">Confirm delete</button>
+          </div>
+        </section>
+      </div>
+    } `,
+})
+export class MediaManagement {
+  private api = inject(Api);
+  pending = signal<Media | null>(null);
+  items = signal<Media[]>([]);
+  loading = signal(true);
+  busy = signal(false);
+  error = signal('');
+  notice = signal('');
+  formError = signal('');
+  open = signal(false);
+  id = 0;
+  form = empty();
+  constructor() {
+    void this.load();
+  }
+  async load() {
+    try {
+      this.items.set((await firstValueFrom(this.api.get<Media[]>('/media'))).data);
+    } catch (e) {
+      this.error.set(message(e));
+    } finally {
+      this.loading.set(false);
+    }
+  }
+  edit(m?: Media) {
+    this.id = m?.id || 0;
+    this.form = m
+      ? {
+          title: m.title,
+          creator: m.creator,
+          category: m.category,
+          format: m.format,
+          total_copies: m.total_copies,
+          daily_fee: m.daily_fee,
+          daily_late_fee: m.daily_late_fee,
+          archived: !!m.archived,
+        }
+      : empty();
+    this.formError.set('');
+    this.open.set(true);
+  }
+  async save() {
+    if (this.busy()) return;
+    this.busy.set(true);
+    this.formError.set('');
+    try {
+      const { archived, ...body } = this.form;
+      await firstValueFrom(
+        this.id ? this.api.patch('/media/' + this.id, this.form) : this.api.post('/media', body),
+      );
+      this.open.set(false);
+      this.notice.set('Media saved.');
+      await this.load();
+    } catch (e) {
+      this.formError.set(message(e));
+    } finally {
+      this.busy.set(false);
+    }
+  }
+  async remove(m: Media) {
+    if (this.busy()) return;
+    this.pending.set(null);
+    this.busy.set(true);
+    this.error.set('');
+    try {
+      this.notice.set((await firstValueFrom(this.api.delete('/media/' + m.id))).data.message);
+      await this.load();
+    } catch (e) {
+      this.error.set(message(e));
+    } finally {
+      this.busy.set(false);
+    }
+  }
 }

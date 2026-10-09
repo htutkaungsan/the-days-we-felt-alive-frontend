@@ -2,6 +2,10 @@ name: alive-frontend
 services:
   web:
     build: .
-    ports: ["127.0.0.1:4200:8080"]
-    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ['127.0.0.1:4200:8080']
+    networks: [rental]
     restart: unless-stopped
+networks:
+  rental:
+    external: true
+    name: alive-backend_rental
