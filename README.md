@@ -10,6 +10,8 @@ A small full-stack rental shop for music and movie CDs/DVDs. Customers browse an
 - [Software Requirements Specification](docs/SRS.md): objectives, scope, roles, functional/non-functional requirements, validation, use cases and acceptance criteria.
 - [Use Case Diagram](docs/use-case-diagram.png) ([editable SVG](docs/use-case-diagram.svg)).
 - [Verification evidence](docs/verification.md).
+- [Submission checklist](docs/submission-checklist.md).
+- [Final eight-slide presentation](https://github.com/htutkaungsan/the-days-we-felt-alive-backend/blob/main/docs/presentation/the-days-we-felt-alive-final.pptx).
 - [Backend API, database documentation, demo guide and eight-slide presentation](https://github.com/htutkaungsan/the-days-we-felt-alive-backend).
 
 ![Use Case Diagram](docs/use-case-diagram.png)
