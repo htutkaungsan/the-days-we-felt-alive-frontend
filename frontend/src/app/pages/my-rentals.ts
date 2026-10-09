@@ -1,3 +1,4 @@
+import { Notice } from '../core/notifications';
 import { Component, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -5,7 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { Api } from '../core/api';
 import { Rental, message } from '../core/types';
 @Component({
-  imports: [CurrencyPipe, RouterLink],
+  imports: [Notice, CurrencyPipe, RouterLink],
   template: `<section class="page">
     <p class="eyebrow">YOUR FAVORITES, BORROWED</p>
     <div class="section-heading">
@@ -14,7 +15,7 @@ import { Rental, message } from '../core/types';
     </div>
     <p>Bring your copy back to the shop by its due date. An admin will record your return.</p>
     @if (error()) {
-      <p role="alert" class="alert error">{{ error() }}</p>
+      <app-notice [message]="error()" kind="error" />
     }
     @if (loading()) {
       <p class="empty">Loading rentals…</p>

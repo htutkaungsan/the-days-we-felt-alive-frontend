@@ -56,3 +56,12 @@ Catalog artwork uses a fixed 220px area on desktop and 200px on mobile, with `ob
 Following the requested display revision, catalog images use `object-fit: cover` and `object-position: center top`, with 112% width and a small upward crop. Image padding, CSS borders and outlines are removed; baked-in artwork borders are hidden by the crop. Cards stay 500px high. Desktop review and a 320px mobile check confirmed images fill their entire container, with no horizontal overflow. The production Docker build passed and the local frontend was updated.
 
 ![Top-focused covers](top-cover-catalog.png)
+
+
+## Themed notifications and spinning CD — 2026-10-09
+
+General success, error and session messages now use one retro toast outlet; form field validation stays beside its input. Toasts provide accessible alert/status roles, close buttons, deduplication, a three-message limit and hover/focus timer pauses. Rental confirmation includes a working View my rentals link. The hero CD rotates once every 24 seconds and respects reduced-motion preferences.
+
+Chrome verified incorrect-password, successful login, logout and rental confirmation messages; the rental link opens history. Test rental #6 (Moderndog) was returned through the admin dialog, restoring its available copy. At 320px the rental toast stays inside the viewport (x=16, width=288px); the final catalog check has no horizontal overflow. Six frontend unit tests and the Docker production build pass. The existing 500kB bundle warning remains below the error limit.
+
+![Rental confirmation toast](shop-toast.png)

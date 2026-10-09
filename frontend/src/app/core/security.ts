@@ -1,3 +1,4 @@
+import { Notifications } from './notifications';
 import { inject } from '@angular/core';
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { CanActivateFn, Router } from '@angular/router';
@@ -6,6 +7,7 @@ import { Auth } from './auth';
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(Auth),
     router = inject(Router);
+  const notifications = inject(Notifications);
   const isApi = req.url.startsWith('/api/v1/');
   if (isApi && auth.token())
     req = req.clone({ setHeaders: { Authorization: 'Bearer ' + auth.token() } });
@@ -13,6 +15,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if (isApi && error.status === 401 && !req.url.endsWith('/auth/login')) {
         auth.logout();
+        notifications.show('Your session has ended. Please sign in again.', 'info');
         void router.navigate(['/login']);
       }
       return throwError(() => error);

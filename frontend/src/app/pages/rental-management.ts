@@ -1,3 +1,4 @@
+import { Notice } from '../core/notifications';
 import { Component, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
@@ -5,7 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { Api } from '../core/api';
 import { Rental, message } from '../core/types';
 @Component({
-  imports: [FormsModule, CurrencyPipe],
+  imports: [Notice, FormsModule, CurrencyPipe],
   template: `<div class="section-heading">
       <h2>Rentals & returns</h2>
       <button class="secondary small" (click)="load()" [disabled]="loading() || busy()">
@@ -24,10 +25,10 @@ import { Rental, message } from '../core/types';
       </select></label
     >
     @if (error()) {
-      <p role="alert" class="alert error">{{ error() }}</p>
+      <app-notice [message]="error()" kind="error" />
     }
     @if (notice()) {
-      <p role="status" class="alert success">{{ notice() }}</p>
+      <app-notice [message]="notice()" kind="success" />
     }
     @if (loading()) {
       <p class="empty">Loading rentals…</p>
@@ -136,6 +137,7 @@ export class RentalManagement {
     }
   }
   async receive(r: Rental) {
+    this.notice.set('');
     if (this.busy()) return;
     this.pending.set(null);
     this.busy.set(true);

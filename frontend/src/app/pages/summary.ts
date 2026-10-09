@@ -1,3 +1,4 @@
+import { Notice } from '../core/notifications';
 import { Component, inject, signal, computed } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -5,10 +6,10 @@ import { firstValueFrom } from 'rxjs';
 import { Api } from '../core/api';
 import { Media, User, Rental, message } from '../core/types';
 @Component({
-  imports: [CurrencyPipe, RouterLink],
+  imports: [Notice, CurrencyPipe, RouterLink],
   template: `<h2>Shop overview</h2>
     @if (error()) {
-      <p role="alert" class="alert error">{{ error() }}</p>
+      <app-notice [message]="error()" kind="error" />
     }
     @if (loading()) {
       <p class="empty">Loading overview…</p>

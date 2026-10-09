@@ -1,3 +1,4 @@
+import { Notice } from '../core/notifications';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
@@ -9,7 +10,7 @@ import { invalid, wholeNumber, allowedValues } from '../core/validators';
 import { Auth } from '../core/auth';
 import { Media, message } from '../core/types';
 @Component({
-  imports: [ReactiveFormsModule, FieldError, CurrencyPipe, RouterLink],
+  imports: [Notice, ReactiveFormsModule, FieldError, CurrencyPipe, RouterLink],
   template: ` <section class="hero">
       <div>
         <p class="eyebrow">FOR THE DAYS WORTH REMEMBERING</p>
@@ -56,12 +57,16 @@ import { Media, message } from '../core/types';
         ><button [disabled]="loading() || filters.invalid">Search</button>
       </form>
       @if (error()) {
-        <p role="alert" class="alert error">{{ error() }}</p>
+        <app-notice [message]="error()" kind="error" />
       }
       @if (success()) {
-        <p role="status" class="alert success">
-          {{ success() }} <a routerLink="/my-rentals">View my rentals</a>
-        </p>
+        <app-notice
+          [message]="success()"
+          kind="success"
+          title="Your copy is ready"
+          actionLabel="View my rentals"
+          actionPath="/my-rentals"
+        />
       }
       @if (loading()) {
         <p class="empty">Loading the collection…</p>
@@ -178,7 +183,7 @@ import { Media, message } from '../core/types';
               the due date. Your rental starts today.
             </p>
             @if (rentalError()) {
-              <p role="alert" class="alert error">{{ rentalError() }}</p>
+              <app-notice [message]="rentalError()" kind="error" />
             }
             <div class="actions">
               <button

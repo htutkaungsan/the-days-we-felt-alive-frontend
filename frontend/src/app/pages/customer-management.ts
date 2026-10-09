@@ -1,3 +1,4 @@
+import { Notice } from '../core/notifications';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -6,16 +7,16 @@ import { FieldError } from '../core/field-error';
 import { invalid, notBlank, validEmail, passwordBytes, strongPassword } from '../core/validators';
 import { User, message } from '../core/types';
 @Component({
-  imports: [ReactiveFormsModule, FieldError],
+  imports: [Notice, ReactiveFormsModule, FieldError],
   template: `<div class="section-heading">
       <h2>Customers</h2>
       <button class="small" (click)="edit()">Add customer</button>
     </div>
     @if (error()) {
-      <p role="alert" class="alert error">{{ error() }}</p>
+      <app-notice [message]="error()" kind="error" />
     }
     @if (notice()) {
-      <p role="status" class="alert success">{{ notice() }}</p>
+      <app-notice [message]="notice()" kind="success" />
     }
     @if (loading()) {
       <p class="empty">Loading customers…</p>
@@ -118,7 +119,7 @@ import { User, message } from '../core/types';
               >
             }
             @if (formError()) {
-              <p role="alert" class="alert error">{{ formError() }}</p>
+              <app-notice [message]="formError()" kind="error" />
             }
             <div class="actions">
               <button type="button" class="secondary" (click)="open.set(false)" [disabled]="busy()">
@@ -198,6 +199,7 @@ export class CustomerManagement {
     this.open.set(true);
   }
   async save() {
+    this.notice.set('');
     if (this.busy()) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -223,6 +225,7 @@ export class CustomerManagement {
     }
   }
   async remove(u: User) {
+    this.notice.set('');
     if (this.busy()) return;
     this.pending.set(null);
     this.busy.set(true);

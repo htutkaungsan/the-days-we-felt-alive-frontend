@@ -1,3 +1,4 @@
+import { Notifications, Notice } from '../core/notifications';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -8,7 +9,7 @@ import { FieldError } from '../core/field-error';
 import { invalid, notBlank, validEmail, passwordBytes, strongPassword } from '../core/validators';
 import { message } from '../core/types';
 @Component({
-  imports: [ReactiveFormsModule, FieldError, RouterLink],
+  imports: [Notice, ReactiveFormsModule, FieldError, RouterLink],
   template: ` <section class="auth-layout">
     <div class="auth-story">
       <p class="eyebrow">WELCOME TO THE SHOP</p>
@@ -29,7 +30,7 @@ import { message } from '../core/types';
         }}
       </p>
       @if (error()) {
-        <p role="alert" class="alert error">{{ error() }}</p>
+        <app-notice [message]="error()" kind="error" />
       }
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
         @if (register) {
@@ -123,6 +124,7 @@ export class Login {
       this.form.controls.password.updateValueAndValidity();
     }
   }
+  private notifications = inject(Notifications);
   busy = signal(false);
   error = signal('');
   async submit() {
@@ -144,6 +146,12 @@ export class Login {
           }),
         );
       await firstValueFrom(this.auth.login(email.trim(), password));
+      this.notifications.show(
+        this.register
+          ? 'Your account is ready. Welcome to the shop.'
+          : 'Welcome back. Find your next favorite.',
+        'success',
+      );
       await this.router.navigate([this.auth.user()?.role === 'admin' ? '/admin' : '/']);
     } catch (e) {
       this.error.set(message(e));

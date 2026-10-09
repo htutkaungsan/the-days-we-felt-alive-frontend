@@ -917,3 +917,125 @@ footer > span:first-child {
     flex-basis: 200px;
   }
 }
+
+.hero-record .record {
+  animation: record-spin 24s linear infinite;
+}
+@keyframes record-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.toast-stack {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+  display: grid;
+  gap: 12px;
+  width: min(410px, calc(100vw - 32px));
+  pointer-events: none;
+}
+.shop-toast {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 38px 20px 18px;
+  background: #fffaf0;
+  color: var(--ink);
+  border: 1px solid #d9cbb5;
+  border-left: 4px solid #a55b39;
+  border-radius: 10px;
+  box-shadow: 0 12px 36px #29392d24;
+  animation: toast-enter 220ms ease-out;
+}
+.shop-toast.toast-success {
+  border-left-color: #3b6350;
+}
+.shop-toast.toast-error {
+  border-left-color: #a9432b;
+}
+.toast-mark {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #cfbfa6;
+  border-radius: 50%;
+  color: #3b6350;
+  font-size: 22px;
+  line-height: 1;
+  background: #f0e8d8;
+}
+.toast-error .toast-mark {
+  color: #a9432b;
+}
+.toast-copy {
+  min-width: 0;
+}
+.toast-copy .toast-eyebrow {
+  margin: 0 0 5px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  color: #8c4c32;
+}
+.toast-copy h2 {
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+.toast-copy p {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+}
+.toast-copy a {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  text-underline-offset: 4px;
+}
+.toast-close {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  font-size: 22px;
+  line-height: 1;
+}
+.toast-close:hover {
+  background: #ede2cf;
+  color: var(--ink);
+}
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (max-width: 600px) {
+  .toast-stack {
+    top: 16px;
+    right: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-record .record,
+  .shop-toast {
+    animation: none;
+  }
+}

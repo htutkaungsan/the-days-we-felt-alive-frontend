@@ -1,3 +1,4 @@
+import { Notice } from '../core/notifications';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
@@ -17,16 +18,16 @@ const empty = () => ({
   archived: false,
 });
 @Component({
-  imports: [ReactiveFormsModule, FieldError, CurrencyPipe],
+  imports: [Notice, ReactiveFormsModule, FieldError, CurrencyPipe],
   template: `<div class="section-heading">
       <h2>Media collection</h2>
       <button class="small" (click)="edit()">Add media</button>
     </div>
     @if (error()) {
-      <p role="alert" class="alert error">{{ error() }}</p>
+      <app-notice [message]="error()" kind="error" />
     }
     @if (notice()) {
-      <p role="status" class="alert success">{{ notice() }}</p>
+      <app-notice [message]="notice()" kind="success" />
     }
     @if (loading()) {
       <p class="empty">Loading media…</p>
@@ -187,7 +188,7 @@ const empty = () => ({
               >
             }
             @if (formError()) {
-              <p role="alert" class="alert error">{{ formError() }}</p>
+              <app-notice [message]="formError()" kind="error" />
             }
             <div class="actions">
               <button type="button" class="secondary" (click)="open.set(false)" [disabled]="busy()">
@@ -275,6 +276,7 @@ export class MediaManagement {
     this.open.set(true);
   }
   async save() {
+    this.notice.set('');
     if (this.busy()) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -300,6 +302,7 @@ export class MediaManagement {
     }
   }
   async remove(m: Media) {
+    this.notice.set('');
     if (this.busy()) return;
     this.pending.set(null);
     this.busy.set(true);
