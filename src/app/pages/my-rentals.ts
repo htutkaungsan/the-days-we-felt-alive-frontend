@@ -1,0 +1,10 @@
+import { Component,inject,signal } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { Api } from '../core/api';
+import { Rental,message } from '../core/types';
+@Component({imports:[CurrencyPipe,RouterLink],template:`<section class="page"><p class="eyebrow">YOUR FAVORITES, BORROWED</p><div class="section-heading"><h1>My rentals</h1><button class="secondary small" (click)="load()" [disabled]="loading()">Refresh</button></div><p>Bring your copy back to the shop by its due date. An admin will record your return.</p>
+@if(error()){<p role="alert" class="alert error">{{error()}}</p>}
+@if(loading()){<p class="empty">Loading rentals…</p>}@else{<div class="rental-list">@for(r of items();track r.id){<article class="rental-card"><div><span class="status" [class.overdue]="r.status==='overdue'">{{r.status}}</span><h3>{{r.title}}</h3><p>Rental #{{r.id}} · {{r.format}} · {{r.rental_days}} days</p></div><div><small>RENTED / DUE</small><p>{{r.rented_on}} / {{r.due_on}}</p>@if(r.returned_on){<small>Returned {{r.returned_on}}</small>}@else if(r.days_late){<span class="unavailable">{{r.days_late}} days overdue</span>}</div><div><small>{{r.returned_on?'FINAL TOTAL':'ESTIMATED TOTAL'}}</small><h3>{{(r.returned_on?r.total:r.estimated_total)|currency:'THB'}}</h3><small>Rental {{r.rental_fee|currency:'THB'}} + late {{r.estimated_late_fee|currency:'THB'}}</small></div></article>}@empty{<div class="empty"><h3>Your rental story starts here.</h3><p>Find an album or a movie you would love to take home.</p><a class="button" routerLink="/">Browse collection</a></div>}</div>}</section>`})
+export class MyRentals{private api=inject(Api);items=signal<Rental[]>([]);loading=signal(false);error=signal('');constructor(){void this.load();}async load(){this.loading.set(true);try{this.items.set((await firstValueFrom(this.api.get<Rental[]>('/rentals'))).data);this.error.set('');}catch(e){this.error.set(message(e));}finally{this.loading.set(false);}}}

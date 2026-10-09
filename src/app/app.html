@@ -1,0 +1,7 @@
+<header class="site-header"><a class="brand" routerLink="/"><span class="brand-mark" aria-hidden="true">◉</span><span>The Days We Felt Alive<small>CD / DVD RENTAL SHOP</small></span></a>
+<nav aria-label="Main navigation"><a routerLink="/" routerLinkActive="selected" [routerLinkActiveOptions]="{exact:true}">Collection</a>
+@if(auth.user()?.role==='customer'){<a routerLink="/my-rentals" routerLinkActive="selected">My rentals</a>}
+@if(auth.user()?.role==='admin'){<a routerLink="/admin" routerLinkActive="selected">Manage shop</a>}
+@if(auth.user()){<span class="user-name">{{auth.user()?.name}}</span><button class="text-button" (click)="logout()">Sign out</button>}
+@else {<a routerLink="/login">Sign in</a><a class="button small" routerLink="/register">Join the shop</a>}
+</nav></header><main><router-outlet /></main><footer><span>The Days We Felt Alive</span><span>A little music. A good movie. A day to remember.</span><small>Rental fees in THB · Returns accepted at the shop</small></footer>
