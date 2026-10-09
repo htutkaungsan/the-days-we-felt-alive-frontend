@@ -44,3 +44,9 @@ The frontend Docker build and four validator tests pass. Chrome checks cover fra
 ![Retro desktop catalog](retro-catalog-desktop.png)
 
 ![Retro mobile catalog](retro-catalog-mobile.png)
+
+## Compact catalog layout — 2026-10-09
+
+Catalog artwork uses a fixed 220px area on desktop and 200px on mobile, with `object-fit: contain`. All 16 cards have a fixed 500px height. Paragraph spacing is reduced, descriptions are limited to two visible lines and song highlights to three; full text remains in the markup and hover titles. Chrome measurements confirmed equal heights and no overlap between text and rental actions on desktop and at a 320px mobile viewport. The mobile page has no horizontal overflow. The production Docker build passed and the local frontend was refreshed.
+
+![Compact catalog](compact-catalog.png)

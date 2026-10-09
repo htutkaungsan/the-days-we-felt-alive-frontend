@@ -69,9 +69,9 @@ import { Media, message } from '../core/types';
         <div class="media-grid row g-4">
           @for (item of items(); track item.id) {
             <div class="col-12 col-md-6 col-lg-4">
-              <article class="media-card h-100">
+              <article class="media-card">
                 @if (item.image_url && !failedImages().has(item.id)) {
-                  <div class="catalog-art" [class.album-art]="item.category === 'music'">
+                  <div class="catalog-art">
                     <img
                       [src]="item.image_url"
                       [alt]="
@@ -109,10 +109,12 @@ import { Media, message } from '../core/types';
                     </p>
                   }
                   @if (item.description) {
-                    <p class="catalog-description">{{ item.description }}</p>
+                    <p class="catalog-description" [title]="item.description">
+                      {{ item.description }}
+                    </p>
                   }
                   @if (item.featured_tracks) {
-                    <p class="track-highlights">
+                    <p class="track-highlights" [title]="item.featured_tracks">
                       <strong>On this CD</strong> {{ item.featured_tracks }}
                     </p>
                   }

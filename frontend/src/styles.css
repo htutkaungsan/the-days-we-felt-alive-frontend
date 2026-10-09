@@ -821,64 +821,97 @@ footer > span:first-child {
 }
 
 .catalog-art {
-  aspect-ratio: 2 / 3;
+  height: 220px;
+  flex: 0 0 220px;
   background: #e8e2d2;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  padding: 12px;
+  padding: 10px;
 }
 .catalog-art img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
-}
-.catalog-art.album-art {
-  aspect-ratio: 1 / 1;
+  border: 1px solid #555526;
+  outline: 4px solid #f7f1dc;
 }
 .media-card {
+  height: 500px;
   display: flex;
   flex-direction: column;
+}
+.media-card .cover {
+  flex: 0 0 220px;
 }
 .media-details {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  padding: 16px 18px;
+}
+.media-details .meta {
+  margin-bottom: 10px;
+}
+.media-details h3 {
+  font-size: 18px;
+  line-height: 1.3;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.media-details p {
+  margin-bottom: 8px;
+  line-height: 1.45;
 }
 .media-details .card-bottom {
   margin-top: auto;
-  padding-top: 16px;
+  padding-top: 10px;
+  flex-shrink: 0;
 }
 .media-details .original-title {
   color: var(--ink);
-  font-size: 14px;
+  font-size: 13px;
 }
 .media-details .retro-caption {
   font-size: 11px;
   letter-spacing: 0.03em;
   color: #8c4c32;
 }
+.media-details .catalog-description,
+.media-details .track-highlights {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .media-details .catalog-description {
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
+  -webkit-line-clamp: 2;
 }
 .media-details .track-highlights {
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: 11px;
+  line-height: 1.5;
+  -webkit-line-clamp: 3;
   border-top: 1px solid var(--line);
-  padding-top: 10px;
+  padding-top: 6px;
 }
 .track-highlights strong {
   display: block;
   color: var(--ink);
-  font-size: 10px;
+  font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
-
-.catalog-art img {
-  border: 1px solid #555526;
-  outline: 6px solid #f7f1dc;
+@media (max-width: 600px) {
+  .catalog-art,
+  .media-card .cover {
+    height: 200px;
+    flex-basis: 200px;
+  }
 }
