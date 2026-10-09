@@ -14,9 +14,7 @@ import { Media, message } from '../core/types';
       <div>
         <p class="eyebrow">FOR THE DAYS WORTH REMEMBERING</p>
         <h1>Press play.<br />Feel something.</h1>
-        <p>
-          Albums for slow afternoons. Movies for nights in.<br />Find a favorite and take it home.
-        </p>
+        <p>Thai favorites and global classics, 1990–2014.<br />Find a favorite and take it home.</p>
         <a href="#collection" class="button"
           >Explore the collection <span aria-hidden="true">↗</span></a
         >
@@ -72,14 +70,27 @@ import { Media, message } from '../core/types';
           @for (item of items(); track item.id) {
             <div class="col-12 col-md-6 col-lg-4">
               <article class="media-card h-100">
-                <div class="cover" [class.movie]="item.category === 'movie'">
-                  <span class="cover-label"
-                    >{{ item.category === 'music' ? 'ALIVE RECORDS' : 'ALIVE CINEMA' }} /
-                    {{ item.format }}</span
-                  >
-                  <div class="mini-disc" aria-hidden="true"></div>
-                  <span class="cover-title">{{ item.title }}</span>
-                </div>
+                @if (item.image_url && !failedImages().has(item.id)) {
+                  <div class="catalog-art" [class.album-art]="item.category === 'music'">
+                    <img
+                      [src]="item.image_url"
+                      [alt]="
+                        item.title + (item.category === 'music' ? ' album cover' : ' movie poster')
+                      "
+                      loading="lazy"
+                      (error)="imageFailed(item.id)"
+                    />
+                  </div>
+                } @else {
+                  <div class="cover" [class.movie]="item.category === 'movie'">
+                    <span class="cover-label"
+                      >{{ item.category === 'music' ? 'ALIVE RECORDS' : 'ALIVE CINEMA' }} /
+                      {{ item.format }}</span
+                    >
+                    <div class="mini-disc" aria-hidden="true"></div>
+                    <span class="cover-title">{{ item.title }}</span>
+                  </div>
+                }
                 <div class="media-details">
                   <div class="meta">
                     <span>{{ item.category }} · {{ item.format }}</span
@@ -89,6 +100,22 @@ import { Media, message } from '../core/types';
                   </div>
                   <h3>{{ item.title }}</h3>
                   <p>{{ item.creator }}</p>
+                  @if (item.original_title && item.original_title !== item.title) {
+                    <p class="original-title">{{ item.original_title }}</p>
+                  }
+                  @if (item.release_year) {
+                    <p class="retro-caption">
+                      {{ item.release_year }} · {{ item.language }} · {{ item.genre }}
+                    </p>
+                  }
+                  @if (item.description) {
+                    <p class="catalog-description">{{ item.description }}</p>
+                  }
+                  @if (item.featured_tracks) {
+                    <p class="track-highlights">
+                      <strong>On this CD</strong> {{ item.featured_tracks }}
+                    </p>
+                  }
                   <div class="card-bottom">
                     <strong
                       >{{ item.daily_fee | currency: 'THB' : 'symbol' : '1.2-2'
@@ -169,6 +196,10 @@ import { Media, message } from '../core/types';
     }`,
 })
 export class Catalog {
+  failedImages = signal(new Set<number>());
+  imageFailed(id: number) {
+    this.failedImages.update((value) => new Set([...value, id]));
+  }
   auth = inject(Auth);
   private api = inject(Api);
   private fb = inject(FormBuilder);

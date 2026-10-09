@@ -22,7 +22,7 @@ Angular 22 + Bootstrap 5 + custom CSS → HttpClient/RxJS → Express API → My
 
 ![Architecture](docs/architecture-diagram.png)
 
-Nginx forwards `/api/v1` to `express-api:3000` over the backend's Docker network. Angular development uses its proxy to localhost:3017. Only the API accesses MySQL. See [ER diagram](docs/er-diagram.png).
+Nginx forwards `/images/` for local artwork and `/api/v1` to `express-api:3000` over the backend's Docker network. Angular development uses its proxy to localhost:3017. Only the API accesses MySQL. See [ER diagram](docs/er-diagram.png).
 
 ```text
 repository root/
@@ -117,3 +117,9 @@ Registration creates customers only; admin is seeded. JWT is held in **sessionSt
 Public submission repository: [the-days-we-felt-alive-frontend](https://github.com/htutkaungsan/the-days-we-felt-alive-frontend). Its root includes `/frontend`, `/docs` and this README. The backend is linked above and is separately maintained. Submit the frontend URL through the course **MS Teams** channel by the instructor's deadline.
 
 References: [Angular form validation](https://angular.dev/guide/forms/form-validation), [Bootstrap 5 validation](https://getbootstrap.com/docs/5.3/forms/validation/), [Angular version compatibility](https://angular.dev/reference/versions).
+
+## Retro catalog
+
+The backend bundles 16 researched releases from 1990–2014: Thai and English music albums and films. The catalog displays local album covers/posters with retro frames, original Thai titles, year, language, genre and selected track highlights. Image paths such as `/images/retro/boomerang.png` are served by the backend public folder through the same-origin proxy. Covers keep their complete composition with `object-fit: contain`; a fallback remains available for media without an image.
+
+Import the backend’s `retro-catalog/retro-catalog.sql` or run its `npm run seed:retro` importer. Source links, artwork credits and digital reissue notes are in the backend’s `retro-catalog/SOURCES.md`. Stock and fees are shop demonstration data.

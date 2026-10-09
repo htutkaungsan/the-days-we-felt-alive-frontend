@@ -16,6 +16,14 @@ export interface Media {
   daily_fee: number;
   daily_late_fee: number;
   archived: boolean;
+  catalog_key?: string | null;
+  original_title?: string | null;
+  release_year?: number | null;
+  language?: string | null;
+  genre?: string | null;
+  description?: string | null;
+  featured_tracks?: string | null;
+  image_url?: string | null;
 }
 export interface Rental {
   id: number;

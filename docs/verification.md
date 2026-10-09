@@ -36,3 +36,11 @@ The fictional local Assignment Customer and its returned rental remain as demons
 - [Successful admin return](return-flow.png)
 
 ![Validation feedback](form-validation.png)
+
+## Retro catalog verification — 2026-10-09
+
+The frontend Docker build and four validator tests pass. Chrome checks cover framed Thai album artwork, English album/movie filtering and a 390 × 844 mobile card layout with no horizontal overflow. All 16 local image paths are delivered through the frontend image proxy; existing media without artwork retains the fallback cover. Backend metadata/import checks and all seven integration tests pass. The existing initial-bundle warning remains below the build error threshold. See the backend retro-catalog source and verification files for artwork treatment and release references.
+
+![Retro desktop catalog](retro-catalog-desktop.png)
+
+![Retro mobile catalog](retro-catalog-mobile.png)

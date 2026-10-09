@@ -67,7 +67,7 @@ No response-time or uptime service-level guarantee is claimed for this classroom
 
 Browser → Angular frontend → Nginx `/api/v1` proxy → Express API → MySQL. Angular development uses a local API proxy instead of Nginx. JWT authorization is enforced by the API. See [architecture diagram](architecture-diagram.png).
 
-Three tables: `users` (identity, password hash, role, activation), `media` (catalog, copy count, fees, archive state), and `rentals` (user/media foreign keys, dates, rate snapshots, totals, request key). User 1:N rentals; media 1:N rentals. See the [ER diagram](er-diagram.png) and the backend repository for endpoint-by-endpoint documentation.
+Three tables: `users` (identity, password hash, role, activation), `media` (catalog, copy count, fees, archive state and optional retro release metadata/local artwork URL), and `rentals` (user/media foreign keys, dates, rate snapshots, totals, request key). User 1:N rentals; media 1:N rentals. See the [ER diagram](er-diagram.png) and the backend repository for endpoint-by-endpoint documentation.
 
 ## 8. Use cases
 
@@ -104,3 +104,7 @@ Public frontend repository: https://github.com/htutkaungsan/the-days-we-felt-ali
 Backend repository: https://github.com/htutkaungsan/the-days-we-felt-alive-backend
 
 Submit the frontend repository URL through the course MS Teams channel by the instructor's deadline. The supplied assignment does not state a calendar deadline. MS Teams submission is the student's responsibility.
+
+## Retro catalog enhancement — 9 October 2026
+
+Sixteen Thai/English albums and films from 1990–2014 are included by the backend. Catalog cards show original titles, year, language, genre, cover/poster and song highlights. All artwork is stored in the backend public folder and delivered via the frontend’s `/images/` proxy. Existing media without metadata retain the fallback cover. The rental, return, CRUD and authentication rules remain the same.

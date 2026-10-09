@@ -819,3 +819,66 @@ footer > span:first-child {
   display: block;
   position: relative;
 }
+
+.catalog-art {
+  aspect-ratio: 2 / 3;
+  background: #e8e2d2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding: 12px;
+}
+.catalog-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.catalog-art.album-art {
+  aspect-ratio: 1 / 1;
+}
+.media-card {
+  display: flex;
+  flex-direction: column;
+}
+.media-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.media-details .card-bottom {
+  margin-top: auto;
+  padding-top: 16px;
+}
+.media-details .original-title {
+  color: var(--ink);
+  font-size: 14px;
+}
+.media-details .retro-caption {
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: #8c4c32;
+}
+.media-details .catalog-description {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.media-details .track-highlights {
+  font-size: 12px;
+  line-height: 1.6;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.track-highlights strong {
+  display: block;
+  color: var(--ink);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.catalog-art img {
+  border: 1px solid #555526;
+  outline: 6px solid #f7f1dc;
+}
