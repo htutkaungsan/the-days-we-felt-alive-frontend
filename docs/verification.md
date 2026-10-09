@@ -65,3 +65,12 @@ General success, error and session messages now use one retro toast outlet; form
 Chrome verified incorrect-password, successful login, logout and rental confirmation messages; the rental link opens history. Test rental #6 (Moderndog) was returned through the admin dialog, restoring its available copy. At 320px the rental toast stays inside the viewport (x=16, width=288px); the final catalog check has no horizontal overflow. Six frontend unit tests and the Docker production build pass. The existing 500kB bundle warning remains below the error limit.
 
 ![Rental confirmation toast](shop-toast.png)
+
+
+## Hosted frontend/backend — 2026-10-09
+
+The app is hosted at https://the-day.yangon-tech-by-okker.site with a private MySQL database and HTTPS. Chrome checks against the hosted containers through an SSH preview verified the 16-title catalog, spinning CD, customer login/rental/history and admin login/return toast. Preview was used because the local ISP resolver cached the initial missing DNS record; public HTTPS/certificate and image routing were checked separately, and Google/Cloudflare DNS resolves to 142.93.60.71. Both verification rentals were returned, restoring stock for the instructor's demonstration. Credentials are shared separately.
+
+![Hosted catalog, SSH preview](hosted-catalog.png)
+
+![Hosted customer history, SSH preview](hosted-rentals.png)

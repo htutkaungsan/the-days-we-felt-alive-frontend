@@ -5,6 +5,10 @@ A small full-stack rental shop for music and movie CDs/DVDs. Customers browse an
 **Course:** 66-131216 FRONT-END SOFTWARE DEVELOPMENT
 **Team member:** Htut Kaung San — **b67103023**
 
+## Hosted classroom demo
+
+Open **https://the-day.yangon-tech-by-okker.site** to use the connected frontend and backend. The hosted database includes 16 retro music/movie titles and separate instructor demo accounts. Login credentials are shared privately, not stored in this public repository. [Hosting and TLS instructions](https://github.com/htutkaungsan/the-days-we-felt-alive-backend/blob/main/deploy/README.md) describe the deployment.
+
 ## Documentation and assignment requirements
 
 - [Software Requirements Specification](docs/SRS.md): objectives, scope, roles, functional/non-functional requirements, validation, use cases and acceptance criteria.
