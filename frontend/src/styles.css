@@ -824,19 +824,21 @@ footer > span:first-child {
   height: 220px;
   flex: 0 0 220px;
   background: #e8e2d2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
-  padding: 10px;
+  padding: 0;
 }
 .catalog-art img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  width: 112%;
+  max-width: none;
+  height: calc(100% + 48px);
+  object-fit: cover;
+  object-position: center top;
   display: block;
-  border: 1px solid #555526;
-  outline: 4px solid #f7f1dc;
+  position: relative;
+  left: -6%;
+  margin-top: -5%;
+  border: 0;
+  outline: 0;
 }
 .media-card {
   height: 500px;

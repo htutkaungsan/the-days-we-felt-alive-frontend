@@ -50,3 +50,9 @@ The frontend Docker build and four validator tests pass. Chrome checks cover fra
 Catalog artwork uses a fixed 220px area on desktop and 200px on mobile, with `object-fit: contain`. All 16 cards have a fixed 500px height. Paragraph spacing is reduced, descriptions are limited to two visible lines and song highlights to three; full text remains in the markup and hover titles. Chrome measurements confirmed equal heights and no overlap between text and rental actions on desktop and at a 320px mobile viewport. The mobile page has no horizontal overflow. The production Docker build passed and the local frontend was refreshed.
 
 ![Compact catalog](compact-catalog.png)
+
+## Full-width top-focused cover display — 2026-10-09
+
+Following the requested display revision, catalog images use `object-fit: cover` and `object-position: center top`, with 112% width and a small upward crop. Image padding, CSS borders and outlines are removed; baked-in artwork borders are hidden by the crop. Cards stay 500px high. Desktop review and a 320px mobile check confirmed images fill their entire container, with no horizontal overflow. The production Docker build passed and the local frontend was updated.
+
+![Top-focused covers](top-cover-catalog.png)

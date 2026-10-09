@@ -120,6 +120,6 @@ References: [Angular form validation](https://angular.dev/guide/forms/form-valid
 
 ## Retro catalog
 
-The backend bundles 16 researched releases from 1990–2014: Thai and English music albums and films. The catalog displays local album covers/posters with retro frames, original Thai titles, year, language, genre and selected track highlights. Image paths such as `/images/retro/boomerang.png` are served by the backend public folder through the same-origin proxy. Covers keep their complete composition with `object-fit: contain`; a fallback remains available for media without an image.
+The backend bundles 16 researched releases from 1990–2014: Thai and English music albums and films. The catalog displays local album covers/posters with retro frames, original Thai titles, year, language, genre and selected track highlights. Image paths such as `/images/retro/boomerang.png` are served by the backend public folder through the same-origin proxy. Covers fill a fixed-height area using `object-fit: cover`, top alignment and a small zoom that crops artwork borders; a fallback remains available for media without an image.
 
 Import the backend’s `retro-catalog/retro-catalog.sql` or run its `npm run seed:retro` importer. Source links, artwork credits and digital reissue notes are in the backend’s `retro-catalog/SOURCES.md`. Stock and fees are shop demonstration data.
