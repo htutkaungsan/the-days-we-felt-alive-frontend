@@ -87,8 +87,8 @@ import { Rental, message } from '../core/types';
       </div>
     }
     @if (pending(); as rental) {
-      <div class="modal-backdrop">
-        <section class="modal" role="dialog" aria-modal="true" aria-labelledby="return-title">
+      <div class="shop-overlay">
+        <section class="shop-dialog" role="dialog" aria-modal="true" aria-labelledby="return-title">
           <h2 id="return-title">Receive this return?</h2>
           <p>{{ rental.title }} · {{ rental.customer_name }}</p>
           <p>Confirm after receiving the physical copy at the shop.</p>

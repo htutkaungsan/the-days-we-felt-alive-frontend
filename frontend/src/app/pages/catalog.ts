@@ -1,13 +1,15 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../core/api';
+import { FieldError } from '../core/field-error';
+import { invalid, wholeNumber, allowedValues } from '../core/validators';
 import { Auth } from '../core/auth';
 import { Media, message } from '../core/types';
 @Component({
-  imports: [FormsModule, CurrencyPipe, RouterLink],
+  imports: [ReactiveFormsModule, FieldError, CurrencyPipe, RouterLink],
   template: ` <section class="hero">
       <div>
         <p class="eyebrow">FOR THE DAYS WORTH REMEMBERING</p>
@@ -34,26 +36,26 @@ import { Media, message } from '../core/types';
         </div>
         <span>{{ items().length }} titles to discover</span>
       </div>
-      <form class="filters" (ngSubmit)="load()">
+      <form class="filters" [formGroup]="filters" (ngSubmit)="load()" novalidate>
         <label class="search-label"
           >Search titles<input
             name="search"
-            [(ngModel)]="search"
+            formControlName="search"
             placeholder="Search for your next favorite…"
             maxlength="150" /></label
         ><label
-          >Category<select name="category" [(ngModel)]="category">
+          >Category<select class="form-select" name="category" formControlName="category">
             <option value="">All categories</option>
             <option value="music">Music</option>
             <option value="movie">Movies</option>
           </select></label
         ><label
-          >Format<select name="format" [(ngModel)]="format">
+          >Format<select class="form-select" name="format" formControlName="format">
             <option value="">All formats</option>
             <option>CD</option>
             <option>DVD</option>
           </select></label
-        ><button [disabled]="loading()">Search</button>
+        ><button [disabled]="loading() || filters.invalid">Search</button>
       </form>
       @if (error()) {
         <p role="alert" class="alert error">{{ error() }}</p>
@@ -66,45 +68,47 @@ import { Media, message } from '../core/types';
       @if (loading()) {
         <p class="empty">Loading the collection…</p>
       } @else {
-        <div class="media-grid">
+        <div class="media-grid row g-4">
           @for (item of items(); track item.id) {
-            <article class="media-card">
-              <div class="cover" [class.movie]="item.category === 'movie'">
-                <span class="cover-label"
-                  >{{ item.category === 'music' ? 'ALIVE RECORDS' : 'ALIVE CINEMA' }} /
-                  {{ item.format }}</span
-                >
-                <div class="mini-disc" aria-hidden="true"></div>
-                <span class="cover-title">{{ item.title }}</span>
-              </div>
-              <div class="media-details">
-                <div class="meta">
-                  <span>{{ item.category }} · {{ item.format }}</span
-                  ><span [class.unavailable]="!item.available_copies">{{
-                    item.available_copies ? item.available_copies + ' available' : 'Out of stock'
-                  }}</span>
-                </div>
-                <h3>{{ item.title }}</h3>
-                <p>{{ item.creator }}</p>
-                <div class="card-bottom">
-                  <strong
-                    >{{ item.daily_fee | currency: 'THB' : 'symbol' : '1.2-2'
-                    }}<small> / day</small></strong
+            <div class="col-12 col-md-6 col-lg-4">
+              <article class="media-card h-100">
+                <div class="cover" [class.movie]="item.category === 'movie'">
+                  <span class="cover-label"
+                    >{{ item.category === 'music' ? 'ALIVE RECORDS' : 'ALIVE CINEMA' }} /
+                    {{ item.format }}</span
                   >
-                  @if (auth.user()?.role === 'customer') {
-                    <button
-                      class="small"
-                      [disabled]="!item.available_copies"
-                      (click)="choose(item)"
-                    >
-                      Rent a copy
-                    </button>
-                  } @else if (!auth.user()) {
-                    <a routerLink="/login" class="text-link">Sign in to rent ↗</a>
-                  }
+                  <div class="mini-disc" aria-hidden="true"></div>
+                  <span class="cover-title">{{ item.title }}</span>
                 </div>
-              </div>
-            </article>
+                <div class="media-details">
+                  <div class="meta">
+                    <span>{{ item.category }} · {{ item.format }}</span
+                    ><span [class.unavailable]="!item.available_copies">{{
+                      item.available_copies ? item.available_copies + ' available' : 'Out of stock'
+                    }}</span>
+                  </div>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.creator }}</p>
+                  <div class="card-bottom">
+                    <strong
+                      >{{ item.daily_fee | currency: 'THB' : 'symbol' : '1.2-2'
+                      }}<small> / day</small></strong
+                    >
+                    @if (auth.user()?.role === 'customer') {
+                      <button
+                        class="small"
+                        [disabled]="!item.available_copies"
+                        (click)="choose(item)"
+                      >
+                        Rent a copy
+                      </button>
+                    } @else if (!auth.user()) {
+                      <a routerLink="/login" class="text-link">Sign in to rent ↗</a>
+                    }
+                  </div>
+                </div>
+              </article>
+            </div>
           } @empty {
             <p class="empty">No titles found. Try another search.</p>
           }
@@ -112,23 +116,30 @@ import { Media, message } from '../core/types';
       }
     </section>
     @if (selected(); as item) {
-      <div class="modal-backdrop">
-        <section class="modal" role="dialog" aria-modal="true" aria-labelledby="rental-title">
+      <div class="shop-overlay">
+        <section class="shop-dialog" role="dialog" aria-modal="true" aria-labelledby="rental-title">
           <p class="eyebrow">TAKE A FAVORITE HOME</p>
           <h2 id="rental-title">{{ item.title }}</h2>
           <p>One {{ item.format }} copy · Return at the shop</p>
-          <form (ngSubmit)="rent()" #rentalForm="ngForm">
+          <form [formGroup]="rentalForm" (ngSubmit)="rent()" novalidate>
             <label
               >Rental days<input
+                class="form-control"
+                [class.is-invalid]="invalid(rentalForm.controls.days)"
+                [attr.aria-invalid]="invalid(rentalForm.controls.days)"
+                aria-describedby="catalog-days-error"
                 type="number"
                 name="days"
-                [(ngModel)]="days"
+                formControlName="days"
                 min="1"
                 max="30"
                 step="1"
                 required
-                (ngModelChange)="key = ''"
-                autofocus
+                (input)="key = ''"
+                autofocus /><app-field-error
+                [control]="rentalForm.controls.days"
+                label="Rental days"
+                errorId="catalog-days-error"
             /></label>
             <div class="fee-preview">
               <span>Rental fee</span><strong>{{ item.daily_fee * days | currency: 'THB' }}</strong>
@@ -160,15 +171,24 @@ import { Media, message } from '../core/types';
 export class Catalog {
   auth = inject(Auth);
   private api = inject(Api);
+  private fb = inject(FormBuilder);
+  invalid = invalid;
   items = signal<Media[]>([]);
   loading = signal(true);
   error = signal('');
   success = signal('');
-  search = '';
-  category = '';
-  format = '';
+  filters = this.fb.nonNullable.group({
+    search: ['', Validators.maxLength(150)],
+    category: ['', allowedValues(['', 'music', 'movie'])],
+    format: ['', allowedValues(['', 'CD', 'DVD'])],
+  });
   selected = signal<Media | null>(null);
-  days = 3;
+  rentalForm = this.fb.nonNullable.group({
+    days: [3, [Validators.required, Validators.min(1), Validators.max(30), wholeNumber]],
+  });
+  get days() {
+    return this.rentalForm.controls.days.value;
+  }
   key = '';
   renting = signal(false);
   rentalError = signal('');
@@ -176,13 +196,18 @@ export class Catalog {
     void this.load();
   }
   async load() {
+    if (this.filters.invalid) {
+      this.filters.markAllAsTouched();
+      return;
+    }
     this.loading.set(true);
     this.error.set('');
     try {
       const q = new URLSearchParams();
-      if (this.search.trim()) q.set('search', this.search.trim());
-      if (this.category) q.set('category', this.category);
-      if (this.format) q.set('format', this.format);
+      const { search, category, format } = this.filters.getRawValue();
+      if (search.trim()) q.set('search', search.trim());
+      if (category) q.set('category', category);
+      if (format) q.set('format', format);
       this.items.set(
         (await firstValueFrom(this.api.get<Media[]>('/media?' + q))).data.filter(
           (m) => !m.archived,
@@ -196,7 +221,7 @@ export class Catalog {
   }
   choose(item: Media) {
     this.selected.set(item);
-    this.days = 3;
+    this.rentalForm.reset({ days: 3 });
     this.key = '';
     this.rentalError.set('');
     this.success.set('');
@@ -206,7 +231,11 @@ export class Catalog {
   }
   async rent() {
     const item = this.selected();
-    if (!item || this.renting() || !this.validDays()) return;
+    if (!item || this.renting()) return;
+    if (this.rentalForm.invalid) {
+      this.rentalForm.markAllAsTouched();
+      return;
+    }
     this.renting.set(true);
     this.rentalError.set('');
     if (!this.key) this.key = crypto.randomUUID();

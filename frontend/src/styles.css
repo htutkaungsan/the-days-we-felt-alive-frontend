@@ -289,19 +289,19 @@ main {
   margin-bottom: 32px;
 }
 .filters label {
+  min-width: 150px;
   margin-bottom: 0;
   flex: 1;
 }
 .filters .search-label {
+  min-width: 0;
   flex: 2.8;
 }
 .filters button {
   height: 48px;
 }
 .media-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  margin-top: 0;
 }
 .media-card {
   border: 1px solid var(--line);
@@ -489,7 +489,7 @@ main {
   background: #f8dfd3;
   color: #9c392d;
 }
-.modal-backdrop {
+.shop-overlay {
   position: fixed;
   inset: 0;
   z-index: 20;
@@ -499,7 +499,7 @@ main {
   justify-content: center;
   padding: 24px;
 }
-.modal {
+.shop-dialog {
   background: var(--paper);
   padding: 32px;
   width: 500px;
@@ -676,7 +676,7 @@ footer > span:first-child {
     height: 240px;
   }
   .media-grid {
-    grid-template-columns: repeat(2, 1fr);
+    margin-top: 0;
   }
   .auth-layout {
     gap: 30px;
@@ -739,7 +739,7 @@ footer > span:first-child {
     width: 100%;
   }
   .media-grid {
-    grid-template-columns: 1fr;
+    margin-top: 0;
   }
   .auth-layout {
     margin: 35px 22px;
@@ -764,7 +764,7 @@ footer > span:first-child {
   .tabs {
     gap: 22px;
   }
-  .modal {
+  .shop-dialog {
     padding: 24px;
   }
   .form-row {
@@ -779,4 +779,43 @@ footer > span:first-child {
   .hero .button {
     margin-top: 5px;
   }
+}
+
+/* Bootstrap grid and validation controls retain the shop palette. */
+.media-grid.row {
+  display: flex;
+  margin-left: -12px;
+  margin-right: -12px;
+  gap: 0;
+}
+.media-grid.row > div {
+  margin-top: 0;
+  margin-bottom: 24px;
+}
+.form-control,
+.form-select {
+  background-color: #fffdf8;
+  color: var(--ink);
+  border-color: #d8d8cb;
+  font-family: inherit;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: #b98057;
+  box-shadow: 0 0 0 0.2rem #ba512e1a;
+}
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border-color: #a9432b;
+}
+.invalid-feedback {
+  color: #a9432b;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+.shop-dialog {
+  display: block;
+  position: relative;
 }

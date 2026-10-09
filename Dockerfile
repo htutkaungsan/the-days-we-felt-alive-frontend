@@ -1,8 +1,8 @@
 FROM node:24-alpine AS build
 WORKDIR /app
-COPY package*.json ./
+COPY frontend/package*.json ./
 RUN npm ci
-COPY . .
+COPY frontend/ ./
 RUN npm run build
 FROM nginxinc/nginx-unprivileged:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
