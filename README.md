@@ -47,3 +47,9 @@ See backend README for complete API documentation, database schema, automated te
 ## Verification
 
 Production build passes. Customer registration, filtering, rental confirmation, history and session restoration were verified in the browser, followed by admin return and CRUD management. Backend integration tests independently check permissions and concurrency. See backend `docs/verification.md` for evidence.
+
+## Connected backend
+
+[Backend API and presentation](https://github.com/htutkaungsan/the-days-we-felt-alive-backend). Clone the projects into sibling `backend` and `frontend` folders.
+
+Version requirements: [Angular compatibility](https://angular.dev/reference/versions).
